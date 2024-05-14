@@ -26,6 +26,7 @@
     <li>logo.png</li>    
     <li>wellcome.png</li>
     </ul>
+  <li>model</li>
   </ul>
 </il>
 
