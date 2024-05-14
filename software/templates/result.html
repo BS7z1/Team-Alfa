@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}RESULT{% endblock %}
+
+{% block content %}
+{% if hvac_type and date_list and hvac_pred %}
+<h1 class="result">RESULT</h1>
+<div class="result_content">
+    <div class="stats_pred">
+        <h4>Consumption (kW)</h4>
+        <p>Average: <span id="ave"></span></p>
+        <p>Total: <span id="total"></span></p>
+    </div>
+    <canvas id="hvacChart" style="width:100%;max-width:600px"></canvas>
+
+    <button onclick="Back()">Back</button>
+</div>
+<style>
+    .result{
+        text-align: center;
+        align-items: center;
+        font-size: 36px;
+        color: #f0f0f0;
+        font-family: 'Arial', sans-serif;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+        margin: 20px 0;
+        padding: 10px
+    }
+    .result_content{
+        position: relative;
+        font-family: 'Arial', sans-serif;
+        color: #f0f0f0;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+        background-color: rgba(0,0,0,0.8);
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        font-size: 24;
+        margin: 20px;
+        padding: 30px;
+    }
+
+    #hvacChart {
+        width: 100%;
+        max-width: 800px;
+        overflow-x: auto;
+    }
+
+    canvas {
+        height: auto !important;
+        max-width: 100% !important
+    }
+
+    .stats_pred {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        font-size: small;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 100;
+    }
+
+    button {
+        width: 60%;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #4b9aed;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #367bb7;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function Back() {
+        window.location.href = '/predict'
+    }
+    
+    var ctx = document.getElementById('hvacChart').getContext('2d');
+    var hvacChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ date_list|tojson }},
+            datasets: [{
+                label: {{ hvac_type|tojson }},
+                data: {{ hvac_pred|tojson }},
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 2,
+                legend: false
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    gridLines: {
+                        display: false
+                    }
+                },
+                x: {
+                    gridLines: {
+                        display: false
+                    }
+                }
+            },
+            plugins:{
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Prediction of '+ {{ hvac_type|tojson }},
+                    font: {
+                        size: 20,
+                        family: 'Arial, sans-serif'
+                    },
+                    color: '#ffffff'
+                }
+            }
+        }
+    });
+
+    var predictions = {{ hvac_pred|tojson }}
+    var total = predictions.reduce(function(acc, cur) { return acc + cur; }, 0);
+    var average = total / predictions.length;
+    document.getElementById('ave').innerText = average.toFixed(2);
+    document.getElementById('total').innerText = total.toFixed(2);
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block title %}DATA and PREDICTION{% endblock %}
+
+{% block content %}
+<h1 class="animate__animated animate__heartBeat predict">Please input the data</h1>
+<div class="model_predict">    
+    <form id="predictionForm" action="/predict" method="post">
+        <select id="model_select" name="mode" onchange="updateOptions()">
+            <option value="North">North Wing</option>
+            <option value="South">South Wing</option>
+        </select>
+        <br>
+        <!-- Must feature -->
+        <div class="condition_div">
+            <select id="conditions" name="THO">
+                <option value="Temperature">Temperature</option>
+                <option value="Humidity">Humidity</option>
+            </select>
+            <div class="range" >
+                <input type="number"  name="minValue" placeholder="Enter minimum" required>
+                <input type="number"  name="maxValue" placeholder="Enter maximum" required>
+            </div>
+        </div>
+        <!-- features input -->
+        <br>
+        <select id="parameter_select" name="parameter[]"></select>
+        <input type="number" name="parameterValue[]" placeholder="Enter value" required>
+        <!-- add more feature -->
+        <button type="button" onclick="addAttribute()">Add More Attributes</button>
+        <!-- prediction -->
+        <button type="submit">Predict</button>
+    </form>
+</div>
+<script>
+    const northOpt = [
+        'rtu_001_sat_sp_tn', 'rtu_002_sat_sp_tn', 'rtu_001_econ_stpt_tn',
+        'rtu_002_econ_stpt_tn', 'rtu_001_pa_static_stpt_tn', 'rtu_002_pa_static_stpt_tn',
+        'rtu_001_heating_sp', 'rtu_002_heating_sp', 'rtu_001_cooling_sp', 'rtu_002_cooling_sp'
+    ];
+    const southOpt = [
+        'rtu_003_sat_sp_tn', 'rtu_004_sat_sp_tn', 'rtu_003_econ_stpt_tn',
+        'rtu_004_econ_stpt_tn', 'rtu_003_pa_static_stpt_tn', 'rtu_004_pa_static_stpt_tn',
+        'rtu_003_heating_sp', 'rtu_004_heating_sp', 'rtu_003_cooling_sp', 'rtu_004_cooling_sp'
+    ];
+
+    document.getElementById('predictionForm').onsubmit = function() {
+        var minValue = document.getElementsByName('minValue')[0].value;
+        var maxValue = document.getElementsByName('maxValue')[0].value;
+        if (parseInt(maxValue) <= parseInt(minValue)) {
+            alert('The maximum value must be greater than the minimum value.');
+            return false
+        }
+        return true
+    }
+
+    function updateOptions(){
+        const modelSelect = document.getElementById('model_select');
+        const parameterSelect = document.getElementById('parameter_select');
+        parameterSelect.innerHTML = '';
+
+        const options = modelSelect.value === 'North' ? northOpt:southOpt;
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option;
+            opt.innerHTML = option;
+            parameterSelect.appendChild(opt);
+        })
+    }
+
+    function addAttribute(){
+        const container = document.getElementById('predictionForm');
+        const newAtt = document.createElement('div');
+        newAtt.innerHTML = `
+            <select name="parameter[]">
+                ${document.getElementById('parameter_select').innerHTML}
+            </select>
+            <input type="number" name="parameterValue[]" placeholder="Enter value" required>
+            <br>`;
+        const predictButton = container.querySelector('button[type="button"]');
+        container.insertBefore(newAtt, predictButton)
+    }
+
+    window.onload = updateOptions;
+</script>
+<style>
+    .predict{
+        text-align: center;
+        font-size: 36px;
+        color: #f0f0f0;
+        font-family: 'Arial', sans-serif;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+        margin: 20px 0;
+        padding: 10px
+    }
+    .model_predict{
+        font-family: 'Arial', sans-serif;
+        color: #f0f0f0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        font-size: 24;
+        margin: 20px;
+        padding: 30px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: rgba(0,0,0,0.6);
+    }
+    
+    #predictionForm{
+        align-items: left
+    }
+    .condition_div {
+        display: flex;
+        align-items: center;
+        width: 80%;
+        margin-bottom: 10px
+    }
+    .condition_div select {
+        flex: 1 0 40%;
+        margin-right: 10px
+        
+    }
+    .range{
+        flex: 1 0 40%;
+        display: flex;
+        justify-content: space-between
+    }
+    .range input {
+        width: 49%;
+    }
+
+    select, input{
+        width: 40%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        background-color: #f8f8f8
+    }
+    button {
+        width: 80%;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #4b9aed;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+</style>
+{% endblock %}

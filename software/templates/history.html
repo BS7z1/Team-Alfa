@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}HISTORY{% endblock %}
+
+{% block content %}
+<h1 class="animate__animated animate__pulse history">HISTORY</h1>
+
+{% if history_data %}
+    <ul class="history_list">    
+        {% for history in history_data %}
+            <li>Condition: {{history['Condition']['condition']}}, range: {{history['Condition']['condition_min']}}-{{history['Condition']['condition_max']}}, Model: {{history['Model']}} Wing, 
+                <br>
+                features: 
+                <ul>
+                {% for parameter in history['Parameters'] %}
+                    <li>parameter:{{parameter['parameter']}}, value: {{parameter['value']}}</li>
+                {% endfor %}
+                </ul>
+                Prediction(kW/month): {{history['hvac_pred']}}
+            </li>    
+            
+            
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="no-hist">No history available.</p>
+{% endif %}
+<style>
+    .history{
+        text-align: center;
+        font-size: 36px;
+        color: #f0f0f0;
+        font-family: 'Arial', sans-serif;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+        margin: 20px 0;
+        padding: 10px
+    }
+
+    .history_list{
+        font-family: 'Arial', sans-serif;
+        color: #f0f0f0;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+        background-color: rgba(0,0,0,0.6);
+        display: flex;
+        /* justify-content: center;
+        text-align: center;
+        align-items: center; */
+        flex-direction: column;
+        font-size: 12;
+        margin: 20px;
+        padding: 30px;
+    }
+
+    .no-hist{
+        text-align: center;
+        font-size: 24px;
+        color: #ccc;
+    }
+</style>
+{% endblock %}
