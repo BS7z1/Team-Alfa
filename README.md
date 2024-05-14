@@ -30,7 +30,7 @@
   </ul>
 </il>
 
-
+<p>Note that since the limitation of storage, you should download the 4 models from the link given in /model/README.md in the /model directory</p>
 <p>The existed account information is: Username: masta Password: 123</p>
 
 <p>To view how to use the website, we suggest you read User Manual.pdf first</p>
