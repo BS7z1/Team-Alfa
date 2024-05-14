@@ -23,5 +23,4 @@ Password: 123
 
 To view how to use the website, we suggest you read User Manual.pdf first
 
-The website is designed by Ziyi Chen
-The copyright belongs to COM6911-Team Alfa Sheffield
+The website is designed by Ziyi Chen and the copyright belongs to COM6911-Team Alfa Sheffield. 
